@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="todo-app">
+            <h2>Todo List <img src="icon.svg" alt=""></h2>
+            <div class="row">
+                <input type="text" id="input-box" placeholder="Add your task">
+                <button id="add-btn">Add</button>
+            </div>
+            <ul id="list-container">
+                <!-- Tasks will be added here -->
+                <li class="checked">Task 1</li>
+                <li>Task 2</li>
+                <li>Task 3</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const inputBox = document.getElementById("input-box");
+        const listContainer = document.getElementById("list-container");
+        const addBtn = document.getElementById("add-btn");
+
+        // Add task when Add button is clicked
+        addBtn.addEventListener("click", addTask);
+        
+        // Add task when Enter key is pressed
+        inputBox.addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                addTask();
+            }
+        });
+
+        function addTask() {
+            // Trim whitespace and check if input is empty
+            if (inputBox.value.trim() === '') {
+                alert("You must write something!");
+            } else {
+                let li = document.createElement("li");
+                li.innerHTML = inputBox.value.trim();
+                listContainer.appendChild(li);
+                
+                let span = document.createElement("span");
+                span.innerHTML = "\u00d7";
+                li.appendChild(span);
+            }
+            inputBox.value = "";
+            saveData();
+        }
+
+        // Mark task as completed or delete when clicked
+        listContainer.addEventListener("click", function(e) {
+            if (e.target.tagName === "LI") {
+                e.target.classList.toggle("checked");
+                saveData();
+            } else if (e.target.tagName === "SPAN") {
+                e.target.parentElement.remove();
+                saveData();
+            }
+        }, false);
+
+        // Save data to local storage
+        function saveData() {
+            localStorage.setItem("data", listContainer.innerHTML);
+        }
+
+        // Load data from local storage
+        function showTask() {
+            listContainer.innerHTML = localStorage.getItem("data") || "";
+        }
+
+        showTask();
+    </script>
+</body>
+</html>
